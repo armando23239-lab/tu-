@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto de Recolección de Pilas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('https://cdn.pixabay.com/photo/2016/11/29/02/03/forest-1868028_1280.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(200, 247, 197, 0.6);
+      z-index: -1;
+    }
+
+    .contenedor {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      max-width: 980px;
+      width: 90%;
+      padding: 35px;
+      margin: 60px auto;
+    }
+
+    h1, h2 {
+      color: #2e7d32;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      border-left: 6px solid #81c784;
+      padding-left: 10px;
+    }
+
+    p {
+      text-align: justify;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    ul {
+      line-height: 1.7;
+      color: #333;
+    }
+
+    .imagenes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .imagenes img {
+      width: 250px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    .imagenes img:hover {
+      transform: scale(1.05);
+    }
+
+    form {
+      margin-top: 25px;
+      background-color: #f1f8e9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .opcion {
+      margin-left: 20px;
+      color: #333;
+    }
+
+    /* Estilos para los campos de texto del registro */
+    .registro-input, .registro-textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box; 
+    }
+
+    .registro-textarea {
+      resize: vertical; 
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #4e4e4e;
+      font-size: 14px;
+    }
+
+    .grafica {
+      margin-top: 30px;
+      background-color: #f1f8e9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    /* Estilos para el mensaje de éxito (reemplazo de alert) */
+    .mensaje-exito {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #2e7d32; /* Verde oscuro */
+      color: white;
+      padding: 25px 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none; /* Inicialmente oculto */
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    
+    /* Estilos para el acceso a otra página */
+    /* Estos estilos se mantienen aunque se elimine el HTML, por si se desea volver a agregar el acceso */
+    .acceso-externo {
+        text-align: center; 
+        margin: 30px 0; 
+        padding: 20px; 
+        background-color: #e8f5e9; /* Fondo verde claro */
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .acceso-externo a {
+        background-color: #388e3c; /* Verde más oscuro para el botón */
+        color: white; 
+        padding: 12px 25px; 
+        border-radius: 8px; 
+        text-decoration: none; 
+        font-weight: bold; 
+        display: inline-block; 
+        margin-top: 10px; 
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .acceso-externo a:hover {
+        background-color: #2e7d32;
+        transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <div class="contenedor">
+    <h1>♻️ Proyecto de Recolección de Pilas Usadas</h1>
+
+    <p>
+      Las pilas son fuentes portátiles de energía que usamos diariamente en controles, relojes, juguetes y muchos aparatos electrónicos.  
+      Sin embargo, su mal manejo puede generar una gran contaminación.  
+      Este proyecto busca **informar, concientizar y promover la recolección responsable de pilas usadas**, evitando que lleguen a los vertederos y contaminando el medio ambiente.
+    </p>
+
+    <div class="imagenes">
+      <!-- NOTA: Se reemplazan las rutas locales por marcadores de posición web. -->
+      <img src="https://placehold.co/250x150/81c784/FFFFFF?text=Pilas+Usadas" alt="Pilas usadas">
+      <img src="https://placehold.co/250x150/81c784/FFFFFF?text=Reciclaje" alt="Reciclaje">
+      <img src="https://placehold.co/250x150/81c784/FFFFFF?text=Ecología" alt="Ecología">
+    </div>
+
+    <h2>🔋 Tipos de pilas y su composición</h2>
+    <ul>
+      <li><strong>Pilas alcalinas:</strong> Contienen zinc y manganeso.</li>
+      <li><strong>Pilas de litio:</strong> Usadas en celulares y cámaras.</li>
+      <li><strong>Pilas de botón:</strong> Comunes en relojes y aparatos médicos.</li>
+      <li><strong>Pilas recargables:</strong> Contienen níquel y cadmio.</li>
+    </ul>
+
+    <h2>🌍 Impacto ambiental</h2>
+    <ul>
+      <li>El mercurio y el plomo afectan el sistema nervioso de los seres vivos.</li>
+      <li>El cadmio contamina suelos agrícolas.</li>
+      <li>Las sustancias químicas alteran ecosistemas acuáticos.</li>
+    </ul>
+
+    <div class="imagenes">
+      <!-- NOTA: Se reemplazan las rutas locales por marcadores de posición web. -->
+      <img src="https://placehold.co/250x150/81c784/FFFFFF?text=Naturaleza+Afectada" alt="Naturaleza afectada">
+      <img src="https://placehold.co/250x150/81c784/FFFFFF?text=Contaminación" alt="Contaminación ambiental">
+    </div>
+
+    <h2>🌱 Beneficios del reciclaje</h2>
+    <ul>
+      <li>Recuperación de materiales valiosos.</li>
+      <li>Menor contaminación y minería.</li>
+      <li>Creación de empleos verdes.</li>
+    </ul>
+
+    <!-- 👥 SECCIÓN DE REGISTRO DE VOLUNTARIOS/USUARIOS (ÚNICO REGISTRO) -->
+    <hr>
+    <h2>✍️ Registro de Voluntarios/Usuarios</h2>
+    <form id="registroUsuarios">
+      <!-- Campo Nombre -->
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" class="registro-input" required>
+
+      <!-- Campo Email -->
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" class="registro-input" required>
+
+      <!-- Campo WhatsApp -->
+      <label for="whatsapp">WhatsApp (Opcional):</label>
+      <input type="tel" id="whatsapp" name="whatsapp" class="registro-input" pattern="[0-9]{10,}" title="Ingresa un número de WhatsApp válido (solo números).">
+      
+      <!-- Campo Comentarios -->
+      <label for="comentarios">Comentarios:</label>
+      <textarea id="comentarios" name="comentarios" class="registro-textarea" rows="4"></textarea>
+
+      <button type="submit" id="btnRegistro">Agregar Voluntario</button>
+    </form>
+    
+    <!-- Se eliminó el apartado 'ACCESO A OTRA PÁGINA DE REGISTRO' según tu solicitud. -->
+    
+    <hr>
+    
+    <!-- 🔹 SECCIÓN DE GRÁFICA -->
+    <h2>📈 Pilas Recolectadas</h2>
+    <div class="grafica">
+      <canvas id="graficaPilas" width="400" height="200"></canvas>
+      <p style="text-align:center; color:#2e7d32; font-weight:bold;">
+        Datos estimados de recolección por zona (en unidades)
+      </p>
+    </div>
+    
+    <hr>
+
+    <h2>📝 Cuestionario</h2>
+    <form id="cuestionario">
+      <label>1. ¿Por qué es importante reciclar las pilas?</label>
+      <div class="opcion"><input type="radio" name="p1" required> Para evitar la contaminación ambiental.</div>
+      <div class="opcion"><input type="radio" name="p1"> Porque ocupan espacio en casa.</div>
+      <div class="opcion"><input type="radio" name="p1"> Porque se ven feas cuando están viejas.</div>
+
+      <label>2. ¿Qué sustancias contaminantes pueden liberar las pilas?</label>
+      <div class="opcion"><input type="radio" name="p2" required> Metales pesados como mercurio y plomo.</div>
+      <div class="opcion"><input type="radio" name="p2"> Agua y oxígeno.</div>
+      <div class="opcion"><input type="radio" name="p2"> Azúcar y carbono.</div>
+
+      <label>3. ¿Qué materiales se pueden recuperar del reciclaje de pilas?</label>
+      <div class="opcion"><input type="radio" name="p3" required> Zinc, manganeso y acero.</div>
+      <div class="opcion"><input type="radio" name="p3"> Papel y vidrio.</div>
+      <div class="opcion"><input type="radio" name="p3"> Solo agua.</div>
+
+      <label>4. ¿Qué puedes hacer tú para contribuir al cuidado del ambiente?</label>
+      <div class="opcion"><input type="radio" name="p4" required> Llevar las pilas usadas a centros de acopio.</div>
+      <div class="opcion"><input type="radio" name="p4"> Tirarlas en la basura común.</div>
+      <div class="opcion"><input type="radio" name="p4"> Guardarlas indefinidamente en casa.</div>
+
+      <label>5. ¿Dónde puedes llevar las pilas usadas para su recolección?</label>
+      <div class="opcion"><input type="radio" name="p5" required> A escuelas, tiendas o centros de acopio autorizados.</div>
+      <div class="opcion"><input type="radio" name="p5"> Al parque más cercano.</div>
+      <div class="opcion"><input type="radio" name="p5"> Al contenedor de basura común.</div>
+
+      <button type="submit">Registrar Respuestas</button>
+    </form>
+
+    <footer>
+      <p>© 2025 Proyecto Verde - Cuidemos el planeta, una pila a la vez 💚</p>
+    </footer>
+  </div>
+  
+  <!-- Contenedor del mensaje de éxito (reemplazo del alert) -->
+  <div id="mensajeExito" class="mensaje-exito">
+    🎉 ¡Registro exitoso!
+  </div>
+
+  <!-- 🔹 Librería Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Función para mostrar el mensaje de éxito personalizado (reemplazo de alert)
+    function mostrarMensaje(texto) {
+      const mensajeExito = document.getElementById('mensajeExito');
+      mensajeExito.innerHTML = texto;
+      mensajeExito.style.display = 'block';
+      
+      // Ocultar el mensaje después de 3 segundos
+      setTimeout(() => {
+        mensajeExito.style.display = 'none';
+      }, 3000); 
+    }
+
+    // Configuración de la gráfica
+    const ctx = document.getElementById('graficaPilas').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Escuela', 'Servicio Social', 'casa', 'Parque', 'Comunidad'],
+        datasets: [{
+          label: 'Pilas Recolectadas',
+          data: [120, 85, 150, 60, 200],
+          backgroundColor: 'rgba(102, 187, 106, 0.7)',
+          borderColor: '#2e7d32',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Cantidad de Pilas'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: '#2e7d32' }
+          }
+        }
+      }
+    });
+
+    // 1. Manejador del Cuestionario (usando mostrarMensaje)
+    document.getElementById("cuestionario").addEventListener("submit", function(event){
+      event.preventDefault();
+      // Usamos la función personalizada en lugar de alert()
+      mostrarMensaje("✅ Se registró tu respuesta correctamente. ¡Gracias por participar!");
+      this.reset();
+    });
+
+    // 2. Manejador del Registro de Usuarios
+    document.getElementById("registroUsuarios").addEventListener("submit", function(event){
+      event.preventDefault(); 
+      
+      const nombre = document.getElementById('nombre').value;
+      // const email = document.getElementById('email').value;
+      // const whatsapp = document.getElementById('whatsapp').value;
+      // const comentarios = document.getElementById('comentarios').value;
+
+      // Aquí iría la lógica para guardar los datos (ej: en una base de datos)
+      // Por ahora, solo confirmamos el registro.
+
+      // Usamos la función personalizada para indicar que el usuario ha sido "agregado"
+      mostrarMensaje(`🎉 Usuario ${nombre} agregado con éxito!`);
+
+      this.reset(); // Limpia el formulario
+    });
+  </script>
+
+</body>
+</html>
